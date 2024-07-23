@@ -1,37 +1,33 @@
 class NeuronOutputMonitor(object):
     def __init__(self):
-        self.neuron_output_records = []
+        self.neuron_output_records = {}
 
-    def record_neuron_output(self, t, neuron_map):
-        record_map = {}
-        for neuron_id in neuron_map:
-            neuron = neuron_map[neuron_id]
-            out = neuron.states[neuron._output_index]
-            record_map[neuron_id] = (t, out)
-        self.neuron_output_records.append(record_map)
-    def clear_record(self):
-        self.neuron_output_records = []
+    def record_neuron_output(self, t, neuron, neuron_id):
+        if neuron_id not in self.neuron_output_records:
+            self.neuron_output_records[neuron_id] = {}
+        out = neuron.states[neuron._output_index]
+        self.neuron_output_records[neuron_id][t] = out
         
-    def get_dataframe_record(self, neuron_map):
+    def clear_record(self):
+        self.neuron_output_records = {}
+        
+    def get_dataframe_record(self):
         import pandas as pd
-        total_record = {neuron_id:[record[neuron_id] for record in self.neuron_output_records] for neuron_id in neuron_map}
-        return pd.DataFrame(total_record)
+        return pd.DataFrame(self.neuron_output_records)
 
 class NeuronMembranePotentialMonitor(object):
     def __init__(self):
-        self.neuron_output_records = []
+        self.neuron_output_records = {}
 
-    def record_neuron_output(self, t, neuron_map):
-        record_map = {}
-        for neuron_id in neuron_map:
-            neuron = neuron_map[neuron_id]
-            out = neuron.states[neuron.INDEX_V]
-            record_map[neuron_id] = (t, out)
-        self.neuron_output_records.append(record_map)
-    def clear_record(self):
-        self.neuron_output_records = []
+    def record_neuron_membrane_potential(self, t, neuron, neuron_id):
+        if neuron_id not in self.neuron_output_records:
+            self.neuron_output_records[neuron_id] = {}
+        v = neuron.states[neuron.INDEX_V]
+        self.neuron_output_records[neuron_id][t] = v
         
-    def get_dataframe_record(self, neuron_map):
+    def clear_record(self):
+        self.neuron_output_records = {}
+        
+    def get_dataframe_record(self):
         import pandas as pd
-        total_record = {neuron_id:[record[neuron_id] for record in self.neuron_output_records] for neuron_id in neuron_map}
-        return pd.DataFrame(total_record)
+        return pd.DataFrame(self.neuron_output_records)

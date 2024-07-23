@@ -21,7 +21,7 @@ class AbstractSynapse(object):
             raise ValueError("Cache is empty.")
         self._states = self._cached_states
         self._cached_states = None
-    
+      
     def cache_states(self, states):
         self._cached_states = states
     
