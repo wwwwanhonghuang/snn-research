@@ -1,5 +1,5 @@
 import numpy as np
-from lib.neuron_models.base_neuron_model import AbstractNeuron
+from snn_lib.neuron_models.base_neuron_model import AbstractNeuron
 
 class HodgkinHuxleyNeuron(AbstractNeuron):
     def __init__(self, hyperparameters):
@@ -18,7 +18,9 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
             }
         )
 
-        self.set_states([-65, 0.05, 0.6, 0.32])
+        self.initialize_states()
+        
+        
 
         self.INDEX_V = 0
         self.INDEX_M = 1
@@ -37,6 +39,10 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
         return 0.01 * (V + 55.0)/(1.0 - np.exp(-(V + 55.0) / 10.0))
     def beta_n(self, V):
         return 0.125 * np.exp(-(V + 65) / 80.0)
+        
+    def initialize_states(self):
+        self.set_cached_states([-65, 0.05, 0.6, 0.32])
+        self._states = self._cached_states
         
     @property
     def C_m(self):
@@ -81,15 +87,14 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
         n = states[self.INDEX_N]
 
         dVdt = (u - self.I_Na(V, m, h) - self.I_K(V, n) - self.I_L(V)) / self.C_m
-        dmdt = self.alpha_m(V)*(1.0 - m) - self.beta_m(V)*m
-        dhdt = self.alpha_h(V)*(1.0 - h) - self.beta_h(V)*h
-        dndt = self.alpha_n(V)*(1.0 - n) - self.beta_n(V)*n
+        dmdt = self.alpha_m(V) * (1.0 - m) - self.beta_m(V) * m
+        dhdt = self.alpha_h(V) * (1.0 - h) - self.beta_h(V) * h
+        dndt = self.alpha_n(V) * (1.0 - n) - self.beta_n(V) * n
 
         V = V + self.dt * dVdt
         m = m + self.dt * dmdt
         h = h + self.dt * dhdt
         n = n + self.dt * dndt
 
-        self.set_states([V, m, h, n])
-        return self.states
+        self.set_cached_states([V, m, h, n])
     

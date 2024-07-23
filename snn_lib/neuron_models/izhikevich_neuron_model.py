@@ -1,4 +1,4 @@
-from lib.neuron_models.base_neuron_model import AbstractNeuron
+from snn_lib.neuron_models.base_neuron_model import AbstractNeuron
 import numpy as np
 class IzhikevichNeuronModel(AbstractNeuron):
     def __init__(self, N, hyperparameters):
@@ -23,8 +23,8 @@ class IzhikevichNeuronModel(AbstractNeuron):
         ## parameters
         self.N = N
         
-        self.set_states([self.vrest * np.ones(N), np.zeros(N)])
-
+        self.initialize_states()
+        
         self.INDEX_V = 0
         self.INDEX_U = 1
     
@@ -59,6 +59,10 @@ class IzhikevichNeuronModel(AbstractNeuron):
     def dt(self):
         return self._hyperparameters['dt']
     
+    def initialize_states(self):
+        self.set_cached_states([self.vrest * np.ones(self.N), np.zeros(self.N)])
+        self._states = self._cached_states
+        
     def update_state(self, I):
         states = self.states
         v = states[self.INDEX_V]
@@ -74,6 +78,5 @@ class IzhikevichNeuronModel(AbstractNeuron):
         u_new = u_new + self.d * s
 
         
-        self.set_states([v, u])
-        return self.states
+        self.set_cached_states([v, u])
    
