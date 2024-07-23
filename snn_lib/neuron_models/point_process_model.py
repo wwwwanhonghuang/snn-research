@@ -35,7 +35,7 @@ class PointProcessNeuron(AbstractNeuron):
         self.INDEX_T = 1
         self.INDEX_TLAST = 2
 
-        self.initialize_states()
+        self.initialize()
 
         self.reset_spikes()
 
@@ -58,14 +58,14 @@ class PointProcessNeuron(AbstractNeuron):
         return self._hyperparameters['tref']
 
 
-    def initialize_states(self):
-        self.set_cached_states([[], 0, np.array([[-self.tref - 1]] * self.N)])
+    def initialize(self):
+        self.cache_states([[], 0, np.array([[-self.tref - 1]] * self.N)])
         self._states = self._cached_states
         
     def reset_spikes(self):        
         self._generate_spikes()
         
-    def update_state(self, u = None):
+    def pseudo_update_states(self, u = None):
         t = self.states[self.INDEX_T]
         tlast = self.states[self.INDEX_TLAST]
         t += 1
@@ -73,7 +73,8 @@ class PointProcessNeuron(AbstractNeuron):
         neurons_v = neurons_v * (self.dt * t > (tlast + self.tref))
         tlast = tlast * (1 - neurons_v) + self.dt * t * neurons_v
         
-        self.set_cached_states([neurons_v, t, tlast])
+        self.cache_states([neurons_v, t, tlast])
+        return self.cached_states
   
 
 class PossionProcessNeuron(PointProcessNeuron):

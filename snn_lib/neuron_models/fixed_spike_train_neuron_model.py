@@ -23,7 +23,7 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         self.INDEX_T = 1
         self.INDEX_TLAST = 2
 
-        self.initialize_states()
+        self.initialize()
 
     def _generate_spikes(self):
         spikes = np.where(np.random.rand(self.time_steps, self.N) < self.fr * self.dt, 1, 0)
@@ -41,15 +41,15 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
 
     def reset_spikes(self, spikes):
         self.spikes = spikes
-     
         
-    def update_state(self, u = None):
+    def pseudo_update_states(self, u = None):
         t = self.states[self.INDEX_T]
         t += 1
         neurons_v = self.spikes[t]
-        self.set_cached_states([neurons_v, t])
-        
-    def initialize_states(self):
-        self.set_cached_states([[], 0])
+        self.cache_states([neurons_v, t])
+        return self.cached_states
+    
+    def initialize(self):
+        self.cache_states([[], 0])
         self._states = self._cached_states
         

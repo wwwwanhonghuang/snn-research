@@ -3,6 +3,7 @@ import numpy as np
 
 class FullConnection(AbstractConnection):
     def __init__(self, N_in, N_out, initW = None):
+        super().__init__()
         self.N_in = N_in
         self.N_out = N_out
         if initW is not None:
@@ -13,7 +14,7 @@ class FullConnection(AbstractConnection):
     def backward(self, x):
         return np.dot(self.W.T, x) #self.W.T @ u
 
-    def update_states(self, u=None):
+    def pseudo_update_states(self, u=None):
         return None
 
     def get_output(self, u):

@@ -18,10 +18,8 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
             }
         )
 
-        self.initialize_states()
+        self.initialize()
         
-        
-
         self.INDEX_V = 0
         self.INDEX_M = 1
         self.INDEX_H = 2
@@ -40,8 +38,8 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
     def beta_n(self, V):
         return 0.125 * np.exp(-(V + 65) / 80.0)
         
-    def initialize_states(self):
-        self.set_cached_states([-65, 0.05, 0.6, 0.32])
+    def initialize(self):
+        self.cache_states([-65, 0.05, 0.6, 0.32])
         self._states = self._cached_states
         
     @property
@@ -79,7 +77,7 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
     def I_L(self, V):
         return self.g_L * (V - self.V_L)
     
-    def update_state(self, u):
+    def pseudo_update_states(self, u):
         states = self.states
         V = states[self.INDEX_V]
         m = states[self.INDEX_M]
@@ -96,5 +94,6 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
         h = h + self.dt * dhdt
         n = n + self.dt * dndt
 
-        self.set_cached_states([V, m, h, n])
+        self.cache_states([V, m, h, n])
+        return self.cached_states
     

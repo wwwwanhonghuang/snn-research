@@ -23,7 +23,7 @@ class IzhikevichNeuronModel(AbstractNeuron):
         ## parameters
         self.N = N
         
-        self.initialize_states()
+        self.initialize()
         
         self.INDEX_V = 0
         self.INDEX_U = 1
@@ -60,10 +60,10 @@ class IzhikevichNeuronModel(AbstractNeuron):
         return self._hyperparameters['dt']
     
     def initialize_states(self):
-        self.set_cached_states([self.vrest * np.ones(self.N), np.zeros(self.N)])
+        self.cache_states([self.vrest * np.ones(self.N), np.zeros(self.N)])
         self._states = self._cached_states
         
-    def update_state(self, I):
+    def pseudo_update_states(self, I):
         states = self.states
         v = states[self.INDEX_V]
         u = states[self.INDEX_U]
@@ -78,5 +78,6 @@ class IzhikevichNeuronModel(AbstractNeuron):
         u_new = u_new + self.d * s
 
         
-        self.set_cached_states([v, u])
+        self.cache_states([v, u])
+        return self.cached_states
    

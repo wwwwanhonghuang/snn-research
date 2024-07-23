@@ -17,7 +17,7 @@ class AbstractNeuron(object):
     def cached_states(self):
         return self._cached_states
     
-    def set_cached_states(self, states):
+    def cache_states(self, states):
         self._cached_states = states
         
     def set_hyperparameters(self, hyperparameters):
@@ -26,26 +26,31 @@ class AbstractNeuron(object):
     def reset_states(self):
         raise NotImplementedError
     
-    def update_state(self, u):
+    def pseudo_update_states(self, u):
         raise NotImplementedError
     
     def reset_time(self, t = 0):
         self.t = t
     
-    def write_back_states(self):
+    def do_update_states(self):
         if self.cached_states == None:
             raise ValueError("No updated states are stored in cache.")
         self._states =  self.cached_states
         self._cached_states = None
     
-    def initialize_states(self):
+    def initialize(self):
         raise NotImplementedError
     
+    def get_output(self, u = None):
+        return self.cached_states[self.output_index]
+    
     def __call__(self, u):
+        if self.states == None:
+            raise ValueError("States have not been initialized yet.")
         if(self.cached_states != None):
-            raise RuntimeError("cached output should write back to `states` property by `step_to_next_states()` before further update.")
-        self.update_state(u)
-        if self.output_index == -1:
-            return self.cached_states
-        return self.cached_states, self.cached_states[self.output_index]
+            raise RuntimeError("cached output should write back to `states` property by `do_update_states()` before further update.")
+        neuron_states = self.pseudo_update_states(u)
+        neuron_output = self.get_output(u)
+        
+        return neuron_states, neuron_output
         
