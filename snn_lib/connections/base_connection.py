@@ -1,7 +1,8 @@
 class AbstractConnection(object):
-    def __init__(self):
+    def __init__(self, output_index = 0):
         self._cached_states = None
         self._states = None
+        self._output_index = output_index
     
     def do_update_states(self):
         if (self._cached_states == None):
@@ -24,8 +25,14 @@ class AbstractConnection(object):
         raise NotImplemented
     
     def get_output(self, u = None):
-        raise NotImplemented
+        if self.cached_states != None:
+            return self.cached_states[self._output_index]
+        else:
+            return self.states[self._output_index]
     
+    def cache_states(self, states):
+        self._cached_states = states
+        
     def __call__(self, u):
         if self.states == None:
             raise ValueError("States have not been initialized yet.")

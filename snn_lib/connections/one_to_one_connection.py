@@ -12,7 +12,8 @@ class OneToOneConnection(AbstractConnection):
         return self.W * x #self.W.T @ x
 
     def pseudo_update_states(self, u=None):
-        return None
+        self.cache_states(self.states)
+        return self.cached_states
 
     def get_output(self, u):
         return self.W * u #self.W @ u
@@ -22,3 +23,5 @@ class OneToOneConnection(AbstractConnection):
             self.W = 0.1 * np.random.rand()
         else:
             self.W = W
+        self._states = [0]
+        self._cached_states = None

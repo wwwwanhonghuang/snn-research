@@ -39,8 +39,8 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
         return 0.125 * np.exp(-(V + 65) / 80.0)
         
     def initialize(self):
-        self.cache_states([-65, 0.05, 0.6, 0.32])
-        self._states = self._cached_states
+        self._states = [-65, 0.05, 0.6, 0.32]
+        self._cached_states = None
         
     @property
     def C_m(self):

@@ -19,9 +19,9 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         self.time_steps = (int)(np.ceil(self.simulation_time_duration / self.dt))
         self.spikes = spikes
         
-        self.INDEX_NEURONS_V = 0
+        self.INDEX_SPIKE_OUT = 0
         self.INDEX_T = 1
-        self.INDEX_TLAST = 2
+        self.INDEX_V = 2
 
         self.initialize()
 
@@ -46,10 +46,10 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         t = self.states[self.INDEX_T]
         t += 1
         neurons_v = self.spikes[t]
-        self.cache_states([neurons_v, t])
+        self.cache_states([neurons_v, t, 0])
         return self.cached_states
     
     def initialize(self):
-        self.cache_states([[], 0])
-        self._states = self._cached_states
+        self._states = [self.spikes[0], 0, 0]
+        self._cached_states = None
         

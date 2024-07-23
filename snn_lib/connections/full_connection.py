@@ -15,7 +15,8 @@ class FullConnection(AbstractConnection):
         return np.dot(self.W.T, x) #self.W.T @ u
 
     def pseudo_update_states(self, u=None):
-        return None
+        self.cache_states(self.states)
+        return self.cached_states
 
     def get_output(self, u):
         return np.dot(self.W, u) #self.W @ u
@@ -25,4 +26,5 @@ class FullConnection(AbstractConnection):
             self.W = 0.1 * np.random.rand(self.N_out, self.N_in)
         else:
             self.W = W
+        self._cached_states = None
             

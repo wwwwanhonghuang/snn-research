@@ -8,22 +8,17 @@ class SingleExponentialSynapse(AbstractSynapse):
         self.dt = dt
         self.td = td
         self.INDEX_R = 0
-        self.initialize()
     
     def initialize(self):
         self._states = [np.zeros(self.N)]
-        self._cached_states = self._states
+        self._cached_states = None
                
-    def get_output(self, u=None):
-        return self._cached_states[self.INDEX_R]
     
     def pseudo_update_states(self, u=None):
         r = self._cached_states[self.INDEX_R]
         r = r * (1 - self.dt / self.td) + u / self.td
         self._cached_states[self.INDEX_R] = r
     
-
-
 class DoubleExponentialSynapse(AbstractSynapse):
     def __init__(self, N, dt=1e-4, td=1e-2, tr=5e-3):
         super().__init__()
@@ -36,6 +31,7 @@ class DoubleExponentialSynapse(AbstractSynapse):
         
     def initialize(self):
         self._states = [np.zeros(self.N), np.zeros(self.N)]
+        self._cached_states = None
 
     def pseudo_update_states(self, u=None):
         r = self.states[self.INDEX_R] * (1 - self.dt / self.tr) + self.states[self.INDEX_HR] * self.dt
@@ -43,6 +39,4 @@ class DoubleExponentialSynapse(AbstractSynapse):
         self._cached_states = [r, hr]
         return self._cached_states
     
-    def get_output(self, u=None):
-        return self._cached_states[self.INDEX_R]
     

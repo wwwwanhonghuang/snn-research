@@ -2,7 +2,7 @@ class AbstractNeuron(object):
     def __init__(self, hyperparameters = None, states = None, output_index = 0):
         self._hyperparameters = hyperparameters
         self._states = states
-        self.output_index = 0
+        self._output_index = 0
         self._cached_states = None
     
     @property
@@ -42,7 +42,10 @@ class AbstractNeuron(object):
         raise NotImplementedError
     
     def get_output(self, u = None):
-        return self.cached_states[self.output_index]
+        if self.cached_states != None:
+            return self.cached_states[self._output_index]
+        else:
+            return self.states[self._output_index]
     
     def __call__(self, u):
         if self.states == None:

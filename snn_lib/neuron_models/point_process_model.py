@@ -59,8 +59,8 @@ class PointProcessNeuron(AbstractNeuron):
 
 
     def initialize(self):
-        self.cache_states([[], 0, np.array([[-self.tref - 1]] * self.N)])
-        self._states = self._cached_states
+        self._states = [[], 0, np.array([[-self.tref - 1]] * self.N)]
+        self._cached_states = None
         
     def reset_spikes(self):        
         self._generate_spikes()

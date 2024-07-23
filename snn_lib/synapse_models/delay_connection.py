@@ -10,23 +10,17 @@ class DelayConnection(AbstractSynapse):
         self.dt = dt
         self.nt_delay = nt_delay
         self.initialize()
-        
     
     def initialize(self):
-        self._states = np.zeros((self.N, self.nt_delay))
-        self._cached_states = self._states
+        self._states = [0, np.zeros((self.N, self.nt_delay))]
+        self._cached_states = None
     
-    def get_output(self, u=None):
-        out = self._cached_states[:, -1]
-        return out
     
     def pseudo_update_states(self, u=None):
-        states = self.states
+        states = self.states[1]
         states[:, 1:] = states[:, :-1]
         states[:, 0] = u
-        self._cached_states = states
+        out = states[:, -1]
+        self._cached_states = [out, states]
+        
         return self._cached_states
-    
-  
-    
-    
