@@ -1,5 +1,9 @@
 class TrainRecorder():
-    def __init__(self) -> None:
+    NEURON_RECORD = 0
+    CONNECTION_RECORD = 1
+    def __init__(self, neuron_map, connections) -> None:
+        self.neuron_map = neuron_map
+        self.connections = connections
         self.neuron_recorders = {
         }
         self._neuron_recorders_item_initializer = {
@@ -31,4 +35,29 @@ class TrainRecorder():
             self.requisites[record] = []
         self.requisites[record].append(requisite)
         
-        
+    def update_all_recorders(self, t):
+        for recorder_id in self.neuron_recorders:
+            if recorder_id in self.requisites:
+                prerequisites = self.requisites[recorder_id]
+                for prerequisite in prerequisites:
+                    if prerequisite[0] == TrainRecorder.NEURON_RECORD:
+                        self.update_neuron_recorder(t, prerequisite[1])
+                    elif prerequisite[0] == TrainRecorder.CONNECTION_RECORD:
+                        self.update_connection_recorder(t, prerequisite[1])            
+            self.update_neuron_recorder(t, recorder_id)
+            
+        for recorder_id in self.connection_recorders:
+            if recorder_id in self.requisites:
+                prerequisites = self.requisites[recorder_id]
+                for prerequisite in prerequisites:
+                    if prerequisite[0] == TrainRecorder.NEURON_RECORD:
+                        self.update_neuron_recorder(t, prerequisite[1])
+                    elif prerequisite[0] == TrainRecorder.CONNECTION_RECORD:
+                        self.update_connection_recorder(t, prerequisite[1])            
+            self.update_connection_recorder(t, recorder_id)
+            
+    def update_neuron_recorder(self, t, recorder_id):
+        pass
+    
+    def update_connection_recorder(self, t, recorder_id):
+        pass
