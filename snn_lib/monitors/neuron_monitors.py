@@ -9,9 +9,8 @@ class NeuronOutputMonitor(object):
             self.neuron_output_records[neuron_id] = {}
         out = neuron.states[neuron._output_index]
         if isinstance(out, (list, numpy.ndarray)):
-            if len(out) > 1:
-                raise ValueError
-            out = out[0]
+            if len(out) == 1:
+                out = out[0]
         
         self.neuron_output_records[neuron_id][t] = out
     def clear_record(self):
@@ -30,9 +29,8 @@ class NeuronMembranePotentialMonitor(object):
             self.neuron_membrance_potential_records[neuron_id] = {}
         v = neuron.states[neuron.INDEX_V]
         if isinstance(v, (list, numpy.ndarray)):
-            if len(v) > 1:
-                raise ValueError
-            v = v[0]
+            if len(v) == 1:
+                v = v[0]
         self.neuron_membrance_potential_records[neuron_id][t] = v
         
     def clear_record(self):

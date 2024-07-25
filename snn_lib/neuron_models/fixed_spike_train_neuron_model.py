@@ -18,8 +18,8 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         self.time_steps = (int)(np.ceil(self.simulation_time_duration / self.dt))
         self.spikes = spikes
         self.N = N
-        if N != spikes.shape[0]:
-            raise ValueError("N = %d should equal to the spikes's 1-st dim, which has size of %d" % (N, spikes.shape[0]))
+        if N != spikes.shape[1]:
+            raise ValueError("N = %d should equal to the spikes's 2-nd dim, which has size of %d" % (N, spikes.shape[1]))
         
         self.INDEX_SPIKE_OUT = 0
         self.INDEX_T = 1
