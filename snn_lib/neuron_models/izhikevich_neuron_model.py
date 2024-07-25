@@ -21,7 +21,7 @@ class IzhikevichNeuronModel(AbstractNeuron):
         )
 
         ## parameters
-        self.N = N
+        self.neuron_count = N
         
         self.initialize()
         
@@ -60,7 +60,7 @@ class IzhikevichNeuronModel(AbstractNeuron):
         return self._hyperparameters['dt']
     
     def initialize_states(self):
-        self._states = [self.vrest * np.ones(self.N), np.zeros(self.N)]
+        self._states = [self.vrest * np.ones(self.n_neuron), np.zeros(self.n_neuron)]
         self._cached_states = None
         
     def pseudo_update_states(self, I):

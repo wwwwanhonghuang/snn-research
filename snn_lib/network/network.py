@@ -1,5 +1,6 @@
 from snn_lib.monitors.neuron_monitors import NeuronOutputMonitor, NeuronMembranePotentialMonitor
 from snn_lib.monitors.synapse_monitors import SynapseOutputMonitor
+import numpy as np
 class Network():
     def __init__(self, neurons, connections, enable_monitors = True) -> None:
         self.neurons = neurons
@@ -38,15 +39,15 @@ class Network():
     
     def forward_single_time_step(self, t, train_recorder):
         def evolve_neuron(neuron_id):
-            neuron = self.neurons[neuron_id]
+            neuron= self.neurons[neuron_id]
             connections_to_current_neuron = self.neuron_in_connection_map[neuron_id]
             
-            total_synapse_out = 0
+            total_synapse_out = np.zeros((neuron.n_neuron))
         
             for connection in connections_to_current_neuron:
                 synapse = connection[3]
                 synapse_states, synapse_out = synapse.states, synapse.states[synapse._output_index]
-                total_synapse_out += synapse_out
+                total_synapse_out += synapse_out.sum(axis = 1)
       
             return neuron(total_synapse_out)
             

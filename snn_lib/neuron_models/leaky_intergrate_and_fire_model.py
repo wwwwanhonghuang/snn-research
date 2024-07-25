@@ -19,7 +19,7 @@ class CurrentBasedLIFNeuron(AbstractNeuron):
         )
 
         ## parameters
-        self.N = N
+        self.neuron_count = N
         self.INDEX_FIRED = 0
         self.INDEX_V = 1
         self.INDEX_TLAST = 2
@@ -92,9 +92,9 @@ class CurrentBasedLIFNeuron(AbstractNeuron):
 
         states = self.states
         if random_state:
-            states[self.INDEX_V] = self.vreset + np.random.rand(self.N) * (self.vthr - self.vreset)
+            states[self.INDEX_V] = self.vreset + np.random.rand(self.n_neuron) * (self.vthr - self.vreset)
         else:
-            states[self.INDEX_V] = self.vreset * np.ones(self.N)
+            states[self.INDEX_V] = self.vreset * np.ones(self.n_neuron)
             states[self.INDEX_TLAST] = 0
             states[self.INDEX_TCOUNT] = 0      
         states[self.INDEX_FIRED] = 0
@@ -105,7 +105,7 @@ class CurrentBasedLIFNeuron(AbstractNeuron):
 class ConductanceBasedLIFNeuron(AbstractNeuron):
     def __init__(self, N, hyperparameters):
         super().__init__()
-        self.N = N
+        self.neuron_count = N
         self.set_hyperparameters(
             {
                 'dt': hyperparameters.get("dt", 1e-4),
@@ -195,9 +195,9 @@ class ConductanceBasedLIFNeuron(AbstractNeuron):
             self._states = [None, None, None, None, None]
         states = self.states
         if random_state:
-            states[self.INDEX_V] = self.vreset + np.random.rand(self.N) * (self.states[self.vthr] - self.vreset)
+            states[self.INDEX_V] = self.vreset + np.random.rand(self.n_neuron) * (self.states[self.vthr] - self.vreset)
         else:
-            states[self.INDEX_V] = self.vreset * np.ones(self.N)
+            states[self.INDEX_V] = self.vreset * np.ones(self.n_neuron)
         states[self.INDEX_TLAST] = 0
         states[self.INDEX_TCOUNT] = 0
         states[self.INDEX_FIRED_OUTPUT] = 0
@@ -209,7 +209,7 @@ class ConductanceBasedLIFNeuron(AbstractNeuron):
 class DiehlAndCook2015LIFNeuron(AbstractNeuron):
     def __init__(self, N, hyperparameters):         
         super().__init__()
-        self.N = N
+        self.neuron_count = N
         self.set_hyperparameters({
             'dt': hyperparameters.get('dt', 1e-3), 
             'tref': hyperparameters.get('tref', 5e-3), 
@@ -234,16 +234,16 @@ class DiehlAndCook2015LIFNeuron(AbstractNeuron):
         self.INDEX_THETA = 5
 
     def initialize(self):
-        self._states = [None, self.vreset * np.ones(self.N), self.init_vthr, None, 0, 0, None]
+        self._states = [None, self.vreset * np.ones(self.n_neuron), self.init_vthr, None, 0, 0, None]
         
     def reset_states(self, random_state=False): 
         states = self.states
         if random_state: 
-            states[self.INDEX_V] = self.vreset + np.random.rand(self.N) * (self.states[self.INDEX_VTHR] - self.vreset) 
+            states[self.INDEX_V] = self.vreset + np.random.rand(self.n_neuron) * (self.states[self.INDEX_VTHR] - self.vreset) 
         else: 
-            states[self.INDEX_V] = self.vreset * np.ones(self.N)
+            states[self.INDEX_V] = self.vreset * np.ones(self.n_neuron)
             states[self.INDEX_VTHR] = self.init_vthr
-            states[self.INDEX_THETA] = np.zeros(self.N) 
+            states[self.INDEX_THETA] = np.zeros(self.n_neuron) 
             states[self.INDEX_TLAST] = 0 
             states[self.INDEX_TCOUNT] = 0 
         self.cache_states(states)

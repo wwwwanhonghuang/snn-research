@@ -20,9 +20,10 @@ class SingleExponentialSynapse(AbstractSynapse):
         self._cached_states[self.INDEX_R] = r
     
 class DoubleExponentialSynapse(AbstractSynapse):
-    def __init__(self, N, dt=1e-4, td=1e-2, tr=5e-3):
+    def __init__(self, pre_N, post_N, dt=1e-4, td=1e-2, tr=5e-3):
         super().__init__()
-        self.N = N
+        self.pre_N = pre_N
+        self.post_N = post_N
         self.dt = dt
         self.td = td
         self.tr = tr
@@ -30,7 +31,7 @@ class DoubleExponentialSynapse(AbstractSynapse):
         self.INDEX_HR = 1
         
     def initialize(self):
-        self._states = [np.zeros(self.N), np.zeros(self.N)]
+        self._states = [np.zeros((self.post_N, self.pre_N)), np.zeros((self.post_N, self.pre_N))]
         self._cached_states = None
 
     def pseudo_update_states(self, u=None):

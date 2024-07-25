@@ -16,7 +16,7 @@ class PointProcessNeuron(AbstractNeuron):
             })
 
         ## parameters
-        self.N = N
+        self.neuron_count = N
         self.time_steps = (int)(np.ceil(self.simulation_time_duration / self.dt))
         if isinstance(fr_generator, int):
             self.fr = np.array([[fr_generator]] * self.time_steps)
@@ -40,10 +40,10 @@ class PointProcessNeuron(AbstractNeuron):
         self.reset_spikes()
 
     def _generate_spikes(self):
-        spikes = np.where(np.random.rand(self.time_steps, self.N) < self.fr * self.dt, 1, 0)
+        spikes = np.where(np.random.rand(self.time_steps, self.n_neuron) < self.fr * self.dt, 1, 0)
         self.spikes = spikes
         print("Num. of spikes:", np.sum(spikes))
-        print("Firing rate:", np.sum(spikes)/(self.N * self.simulation_time_duration))
+        print("Firing rate:", np.sum(spikes)/(self.n_neuron * self.simulation_time_duration))
         
     @property
     def dt(self):
@@ -59,7 +59,7 @@ class PointProcessNeuron(AbstractNeuron):
 
 
     def initialize(self):
-        self._states = [[], 0, np.array([[-self.tref - 1]] * self.N)]
+        self._states = [[], 0, np.array([[-self.tref - 1]] * self.n_neuron)]
         self._cached_states = None
         
     def reset_spikes(self):        
@@ -90,13 +90,13 @@ class GammaProcessNeuron(PointProcessNeuron):
         
     def _generate_spikes(self):
         theta = 1 / (self.k * (self.fr * self.dt)) # fr = 1 / ( k * theta)
-        invervals = np.random.gamma(shape = self.k, scale = theta, size = (self.time_steps, self.N))
+        invervals = np.random.gamma(shape = self.k, scale = theta, size = (self.time_steps, self.n_neuron))
         spike_time = np.cumsum(invervals, axis = 0) # ISI を累積
         spike_time = spike_time.astype(np.int32)
-        spikes = np.zeros((self.time_steps, self.N))
+        spikes = np.zeros((self.time_steps, self.n_neuron))
         spike_time[spike_time > self.time_steps - 1] = 0
-        for i in range(self.N):
+        for i in range(self.n_neuron):
             spikes[spike_time[:, i], i] = 1
         spikes[0] = 0 
         print("Num. of spikes:", np.sum(spikes))
-        print("Firing rate:", np.sum(spikes)/(self.N * self.simulation_time_duration))
+        print("Firing rate:", np.sum(spikes) / (self.n_neuron * self.simulation_time_duration))
