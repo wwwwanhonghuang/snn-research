@@ -21,7 +21,8 @@ class AllToAllConnection(AbstractConnection):
         return self.W * u #self.W @ u
     
     def initialize(self, W = None):
-        size = (self.pre_connection_neuron.n_neuron, self.post_connection_neuron.n_neuron)
+        
+        size = (self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
         W = np.random.rand(self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron) if self.weights_initializer is None else self.weights_initializer(size)
         self.W = W
         
