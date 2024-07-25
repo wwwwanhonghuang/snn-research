@@ -47,19 +47,6 @@ class TrainRecorder():
             self.update_connection_recorder(t, recorder_id)
             
         self._finish_update()
-        
-    def reset_all_recorder(self):
-        for recorder_id in self.neuron_recorders:
-            init_value = self._neuron_recorders_item_initializer[recorder_id]
-            recorder = self.neuron_recorders[recorder_id]
-            for neuron_id in recorder:
-                self.neuron_recorders[recorder_id][neuron_id] = init_value
-                
-        for recorder_id in self.neuron_recorders:
-            init_value = self._connection_recorders_item_initializer[recorder_id]
-            recorder = self.connection_recorders[recorder_id]
-            for connection_id in recorder:
-                self.connection_recorders[recorder_id][connection_id] = init_value
             
     def update_neuron_recorder(self, t, recorder_id, arg = None):
         if recorder_id in self.requisites:
