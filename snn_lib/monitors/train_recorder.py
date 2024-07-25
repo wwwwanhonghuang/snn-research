@@ -20,9 +20,10 @@ class TrainRecorder():
             
         }
     
-    def get_get_enuron_recorder(self, recorder_id):
+    def get_neuron_recorder(self, recorder_id):
         return self.neuron_recorders[recorder_id]['items']
-    
+    def get_connection_recorder(self, recorder_id):
+        return self.connection_recorders[recorder_id]['items']
     def add_neuron_recorder(self, record_id, item_initializer, update_function):
         self.neuron_recorders[record_id] = {'updated': False, 'items': {}}
         self._neuron_recorders_item_initializer[record_id] = item_initializer
@@ -44,6 +45,8 @@ class TrainRecorder():
             
         for recorder_id in self.connection_recorders: 
             self.update_connection_recorder(t, recorder_id)
+            
+        self._finish_update()
         
     def update_neuron_recorder(self, t, recorder_id, arg = None):
         if recorder_id in self.requisites:
@@ -53,12 +56,12 @@ class TrainRecorder():
                         self.update_neuron_recorder(t, prerequisite[1], arg)
                     elif prerequisite[0] == TrainRecorder.CONNECTION_RECORD:
                         self.update_connection_recorder(t, prerequisite[1], arg)
-        recorder = self.neuron_recorders[recorder_id]
+        
         update_function = self._neuron_recorders_update_function[recorder_id]
 
         for neuron_id in self.neuron_map:
-            new_value = update_function(t, recorder['items'], self.neuron_map[neuron_id], recorder['items'][neuron_id], arg)
-            recorder['items'][neuron_id] = new_value
+            new_value = update_function(t, self, self.neuron_map[neuron_id], neuron_id, self.neuron_recorders[recorder_id]['items'][neuron_id], arg)
+            self.neuron_recorders[recorder_id]['items'][neuron_id] = new_value
         self.neuron_recorders[recorder_id]['updated'] = True
     
     def update_connection_recorder(self, t, recorder_id, arg = None):
@@ -70,27 +73,24 @@ class TrainRecorder():
                     elif prerequisite[0] == TrainRecorder.CONNECTION_RECORD:
                         self.update_connection_recorder(t, prerequisite[1], arg)
         
-        recorder = self.connection_recorders[recorder_id]
-        update_function = self._neuron_recorders_update_function[recorder_id]
+        update_function = self._connection_recorders_update_function[recorder_id]
 
         for connection in self.connections:
-            new_value = update_function(t, recorder['items'], \
-                connection, recorder['items'][connection[0] + "_" + connection[1]], arg)
-            recorder['items'][connection[0] + "_" + connection[1]] = new_value
-        self.neuron_recorders[recorder_id]['updated'] = True
+            new_value = update_function(t, self, \
+                connection, self.connection_recorders[recorder_id]['items'][connection[0] + "_" + connection[1]], arg)
+            self.connection_recorders[recorder_id]['items'][connection[0] + "_" + connection[1]] = new_value
+        self.connection_recorders[recorder_id]['updated'] = True
     
     def initialize_recorders(self):
         for recorder_id in self.neuron_recorders:
-            recorder = self.neuron_recorders[recorder_id]
             init_func = self._neuron_recorders_item_initializer[recorder_id]
             for neuron_id in self.neuron_map:
-                recorder[neuron_id] = init_func()
+                self.neuron_recorders[recorder_id]['items'][neuron_id] = init_func()
             
         for recorder_id in self.connection_recorders:
-            recorder = self.neuron_recorders[recorder_id]
             init_func = self._connection_recorders_item_initializer[recorder_id]
             for connection in self.connections:
-                recorder[connection[0] + "_" + connection[1]] = init_func()
+                self.connection_recorders[recorder_id]['items'][connection[0] + "_" + connection[1]] = init_func()
 
     def _finish_update(self):
         for recorder_id in self.neuron_recorders:
