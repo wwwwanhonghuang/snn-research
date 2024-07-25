@@ -18,11 +18,11 @@ class AllToAllConnection(AbstractConnection):
         return self.cached_states
 
     def get_output(self, u):
-        return np.multiply(self.W, self.mask) * u #self.W @ u
+        return self.W * u #self.W @ u
     
     def initialize(self, W = None):
         size = (self.pre_connection_neuron.n_neuron, self.post_connection_neuron.n_neuron)
-        W = np.random.random.rand(self.pre_connection_neuron.n_neuron, self.post_connection_neuron.n_neuron) if self.weights_initializer is None else self.weights_initializer(size)
+        W = np.random.rand(self.pre_connection_neuron.n_neuron, self.post_connection_neuron.n_neuron) if self.weights_initializer is None else self.weights_initializer(size)
         self.W = W
         
         self._states = [0]
