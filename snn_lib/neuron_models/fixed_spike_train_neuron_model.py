@@ -15,9 +15,11 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
             })
 
         ## parameters
-        self.N = N
         self.time_steps = (int)(np.ceil(self.simulation_time_duration / self.dt))
         self.spikes = spikes
+        self.N = N
+        if N != spikes.shape[0]:
+            raise ValueError("N = %d should equal to the spikes's 1-st dim, which has size of %d" % (N, spikes.shape[0]))
         
         self.INDEX_SPIKE_OUT = 0
         self.INDEX_T = 1
@@ -25,11 +27,10 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
 
         self.initialize()
 
-    def _generate_spikes(self):
-        spikes = np.where(np.random.rand(self.time_steps, self.N) < self.fr * self.dt, 1, 0)
+    def _generate_spikes(self, spikes = None):
+        if spikes == None:
+            return
         self.spikes = spikes
-        print("Num. of spikes:", np.sum(spikes))
-        print("Firing rate:", np.sum(spikes)/(self.N * self.simulation_time_duration))
         
     @property
     def dt(self):

@@ -4,6 +4,11 @@ class AbstractNeuron(object):
         self._states = states
         self._output_index = 0
         self._cached_states = None
+        self.neuron_count = 1
+        
+    @property
+    def n_neuron(self):
+        return self.neuron_count
     
     @property
     def states(self):

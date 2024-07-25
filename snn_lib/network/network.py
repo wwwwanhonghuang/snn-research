@@ -1,36 +1,46 @@
 from snn_lib.monitors.neuron_monitors import NeuronOutputMonitor, NeuronMembranePotentialMonitor
 from snn_lib.monitors.synapse_monitors import SynapseOutputMonitor
 class Network():
-    def __init__(self, neurons, connections) -> None:
+    def __init__(self, neurons, connections, enable_monitors = True) -> None:
         self.neurons = neurons
         self.connections = connections
-        self.neuron_output_monitor = NeuronOutputMonitor()
-        self.neuron_membrane_potential_monitor = NeuronMembranePotentialMonitor()
-        self.synapse_output_monitor = SynapseOutputMonitor()
+        self.enable_monitors = enable_monitors
+        if enable_monitors:
+            self.neuron_output_monitor = NeuronOutputMonitor()
+            self.neuron_membrane_potential_monitor = NeuronMembranePotentialMonitor()
+            self.synapse_output_monitor = SynapseOutputMonitor()
 
     def initialize_network(self):
         for neuron_id in self.neurons:
             neuron = self.neurons[neuron_id]
             neuron.initialize()
             neuron.reset_time()
-            self.neuron_output_monitor.record_neuron_output(0, neuron, neuron_id)
-            self.neuron_membrane_potential_monitor.record_neuron_membrane_potential(0, neuron, neuron_id)
+            if self.enable_monitors:
+                self.neuron_output_monitor.record_neuron_output(0, neuron, neuron_id)
+                self.neuron_membrane_potential_monitor.record_neuron_membrane_potential(0, neuron, neuron_id)
 
         for connection in self.connections:
             connection[2].initialize()
             connection[3].initialize()
             synapse_id = f's[{connection[0]}_{connection[1]}]'
-            self.synapse_output_monitor.record_synapse_output(0, connection[3], synapse_id)
+            if self.enable_monitors:
+                self.synapse_output_monitor.record_synapse_output(0, connection[3], synapse_id)
+            
+        self.neuron_in_connection_map = {
+            
+        }
+        for neuron_id in self.neurons:
+            self.neuron_in_connection_map[neuron_id] = []
+            for connection in self.connections:
+                if connection[1] == neuron_id:
+                    self.neuron_in_connection_map[neuron_id].append(connection)
     
     
     def forward_single_time_step(self, t, train_recorder):
         def evolve_neuron(neuron_id):
             neuron = self.neurons[neuron_id]
-            connections_to_current_neuron = []
+            connections_to_current_neuron = self.neuron_in_connection_map[neuron_id]
             
-            for connection in self.connections:
-                if connection[1] == neuron_id:
-                    connections_to_current_neuron.append(connection)
             total_synapse_out = 0
         
             for connection in connections_to_current_neuron:
@@ -55,9 +65,9 @@ class Network():
         for neuron_id in self.neurons:
             neuron = self.neurons[neuron_id]
             neuron.do_update_states()
-            
-            self.neuron_output_monitor.record_neuron_output(t + 1, neuron, neuron_id)
-            self.neuron_membrane_potential_monitor.record_neuron_membrane_potential(t + 1, neuron, neuron_id)
+            if self.enable_monitors:
+                self.neuron_output_monitor.record_neuron_output(t + 1, neuron, neuron_id)
+                self.neuron_membrane_potential_monitor.record_neuron_membrane_potential(t + 1, neuron, neuron_id)
             
         for connection in self.connections:
             connection[2].do_update_states()
@@ -66,6 +76,7 @@ class Network():
 
             # record and monitor
             # connection_history_weights[connection[0] + '_' + connection[1]].append(connection[2].W)
-            self.synapse_output_monitor.record_synapse_output(t + 1, connection[3], synapse_id)
+            if self.enable_monitors:
+                self.synapse_output_monitor.record_synapse_output(t + 1, connection[3], synapse_id)
 
         train_recorder.update_all_recorders(t)
