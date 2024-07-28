@@ -3,11 +3,11 @@ from snn_lib.neuron_models.base_neuron_model import AbstractNeuron
 import numpy as np
 
 class AllToAllConnection(AbstractConnection):
-    def __init__(self, pre_connection_neuron : AbstractNeuron, post_connection_neuron: AbstractNeuron, weights_initializer = None):
+    def __init__(self, pre_connection_neuron : AbstractNeuron, post_connection_neuron: AbstractNeuron, weights = None):
         super().__init__()
         self.pre_connection_neuron = pre_connection_neuron
         self.post_connection_neuron = post_connection_neuron
-        self.weights_initializer = weights_initializer
+        self.weights = weights
         
 
     def backward(self, x):
@@ -23,7 +23,12 @@ class AllToAllConnection(AbstractConnection):
     def initialize(self, W = None):
         
         size = (self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
-        W = np.random.rand(self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron) if self.weights_initializer is None else self.weights_initializer(size)
+        if not self.weights is None:
+            W = self.weights
+        else:
+            W = np.random.rand(self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
+        if W.shape[0] != size[0] or W.shape[1] != size[1]:
+            raise ValueError
         self.W = W
         
         self._states = [0]
