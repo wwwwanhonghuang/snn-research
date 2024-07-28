@@ -72,9 +72,13 @@ class CurrentBasedLIFNeuron(AbstractNeuron):
         last_fired_v = states[self.INDEX_LAST_FIRED_V]
         
         dv = (self.vrest - v + u) / self.tc_m
+        print(f"last v = {v}")
         v = v + (self.dt * tcount > (tlast + self.tref)) * dv * self.dt
+        print(f"new v = {v}")
 
         s = 1 * (v >= self.vthr)
+        print(f"self.vthr = {self.vthr}, s = {s}")
+
 
         tlast = tlast * (1 - s) + self.dt * tcount * s
         v = v * (1 - s) + self.vpeak * s

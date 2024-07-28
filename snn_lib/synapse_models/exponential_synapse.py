@@ -34,10 +34,9 @@ class DoubleExponentialSynapse(AbstractSynapse):
         self._states = [np.zeros((self.post_N, self.pre_N)), np.zeros((self.post_N, self.pre_N))]
         self._cached_states = None
 
-    def pseudo_update_states(self, u=None):
+    def pseudo_update_states(self, u = None):
         r = self.states[self.INDEX_R] * (1 - self.dt / self.tr) + self.states[self.INDEX_HR] * self.dt
         hr = self.states[self.INDEX_HR] * (1 - self.dt / self.td) + u / (self.tr * self.td)
         self._cached_states = [r, hr]
         return self._cached_states
-    
     

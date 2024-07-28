@@ -18,7 +18,8 @@ class PossibilityConnection(AbstractConnection):
         return self.cached_states
 
     def get_output(self, u):
-        return np.multiply(self.W, self.mask) * u #self.W @ u
+        out = np.multiply(self.W, self.mask) * u
+        return out #self.W @ u
     
     def initialize(self, W = None):
         size = (self.pre_connection_neuron.n_neuron, self.post_connection_neuron.n_neuron)

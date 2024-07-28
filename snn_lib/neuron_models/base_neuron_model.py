@@ -40,7 +40,8 @@ class AbstractNeuron(object):
     def do_update_states(self):
         if self.cached_states == None:
             raise ValueError("No updated states are stored in cache.")
-        self._states =  self.cached_states
+        self._states = self.cached_states
+        print(f"neuron {self} update state to {self._states}")
         self._cached_states = None
     
     def initialize(self):

@@ -1,6 +1,7 @@
 from snn_lib.monitors.neuron_monitors import NeuronOutputMonitor, NeuronMembranePotentialMonitor
 from snn_lib.monitors.synapse_monitors import SynapseOutputMonitor
 import numpy as np
+
 class Network():
     def __init__(self, neurons, connections, enable_monitors = True) -> None:
         self.neurons = neurons
@@ -48,6 +49,7 @@ class Network():
                 synapse = connection[3]
                 synapse_states, synapse_out = synapse.states, synapse.states[synapse._output_index]
                 total_synapse_out += synapse_out.sum(axis = 1)
+                
       
             return neuron(total_synapse_out)
             
@@ -60,7 +62,9 @@ class Network():
             pre_neuron = self.neurons[connection[0]]
             post_neuron = self.neurons[connection[1]]
             connection_states, connection_output = conn(pre_neuron.states[pre_neuron._output_index])
+
             synapse_states, synapse_output = synapse(connection_output)
+
             
         # update states of neurons and synapses. (states x_{t} evolve to x_{t + 1})
         for neuron_id in self.neurons:
