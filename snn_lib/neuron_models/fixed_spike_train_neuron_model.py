@@ -53,3 +53,4 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         self._states = [self.spikes[0], 0, 0]
         self._cached_states = None
         
+        

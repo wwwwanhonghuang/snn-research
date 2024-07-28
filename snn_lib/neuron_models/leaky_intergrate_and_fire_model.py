@@ -97,7 +97,7 @@ class CurrentBasedLIFNeuron(AbstractNeuron):
             states[self.INDEX_V] = self.vreset * np.ones(self.n_neuron)
             states[self.INDEX_TLAST] = 0
             states[self.INDEX_TCOUNT] = 0      
-        states[self.INDEX_FIRED] = 0
+        states[self.INDEX_FIRED] = np.zeros(self.n_neuron).astype(int)
         states[self.INDEX_LAST_FIRED_V] = 0
         self._states = states
         self._cached_states = None
