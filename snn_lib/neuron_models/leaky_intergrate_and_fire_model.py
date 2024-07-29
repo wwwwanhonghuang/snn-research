@@ -191,7 +191,7 @@ class ConductanceBasedLIFNeuron(AbstractNeuron):
         return self.cached_states
                 
     
-    def initialize(self, random_state=False):
+    def initialize(self, random_state=False, maintain_weights = False):
         if self.states == None:
             self._states = [None, None, None, None, None]
         states = self.states

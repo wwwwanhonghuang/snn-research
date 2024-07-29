@@ -20,16 +20,17 @@ class AllToAllConnection(AbstractConnection):
     def get_output(self, u):
         return self.W * u #self.W @ u
     
-    def initialize(self, W = None):
+    def initialize(self, W = None, maintain_weights = False):
         
         size = (self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
-        if not self.weights is None:
-            W = self.weights
-        else:
-            W = np.random.rand(self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
-        if W.shape[0] != size[0] or W.shape[1] != size[1]:
-            raise ValueError
-        self.W = W
+        if not maintain_weights:
+            if not self.weights is None:
+                W = self.weights
+            else:
+                W = np.random.rand(self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
+            if W.shape[0] != size[0] or W.shape[1] != size[1]:
+                raise ValueError
+            self.W = W
         
         self._states = [0]
         self._cached_states = None

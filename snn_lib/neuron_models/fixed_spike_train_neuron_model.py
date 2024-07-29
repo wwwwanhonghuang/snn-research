@@ -44,9 +44,11 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         
     def pseudo_update_states(self, u = None):
         t = self.states[self.INDEX_T]
-        t += 1
         neurons_v = self.spikes[t]
+        t += 1
+
         self.cache_states([neurons_v, t, 0])
+        
         return self.cached_states
     
     def initialize(self):

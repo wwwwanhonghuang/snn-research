@@ -3,7 +3,7 @@ from snn_lib.monitors.synapse_monitors import SynapseOutputMonitor
 import numpy as np
 
 class Network():
-    def __init__(self, neurons, connections, enable_monitors = True) -> None:
+    def __init__(self, neurons, connections, enable_monitors = False) -> None:
         self.neurons = neurons
         self.connections = connections
         self.enable_monitors = enable_monitors
@@ -12,7 +12,8 @@ class Network():
             self.neuron_membrane_potential_monitor = NeuronMembranePotentialMonitor()
             self.synapse_output_monitor = SynapseOutputMonitor()
 
-    def initialize_network(self):
+
+    def initialize_network(self, maintain_weights = False):
         for neuron_id in self.neurons:
             neuron = self.neurons[neuron_id]
             neuron.initialize()
@@ -22,7 +23,7 @@ class Network():
                 self.neuron_membrane_potential_monitor.record_neuron_membrane_potential(0, neuron, neuron_id)
 
         for connection in self.connections:
-            connection[2].initialize()
+            connection[2].initialize(maintain_weights = maintain_weights)
             connection[3].initialize()
             synapse_id = f's[{connection[0]}_{connection[1]}]'
             if self.enable_monitors:
