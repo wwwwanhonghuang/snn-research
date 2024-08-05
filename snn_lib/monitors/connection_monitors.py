@@ -12,7 +12,6 @@ def ConnectionWeightsMonitor():
             if len(out) > 1:
                 raise ValueError
             out = out[0]
-        
         self.connection_weight_history[connection_id][t] = out
         
     def clear_record(self):

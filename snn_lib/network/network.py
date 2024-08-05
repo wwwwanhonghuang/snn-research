@@ -1,5 +1,7 @@
 from snn_lib.monitors.neuron_monitors import NeuronOutputMonitor, NeuronMembranePotentialMonitor
 from snn_lib.monitors.synapse_monitors import SynapseOutputMonitor
+import numpy as np
+
 class Network():
     def __init__(self, neurons, connections, enable_monitors = True) -> None:
         self.neurons = neurons
@@ -10,7 +12,8 @@ class Network():
             self.neuron_membrane_potential_monitor = NeuronMembranePotentialMonitor()
             self.synapse_output_monitor = SynapseOutputMonitor()
 
-    def initialize_network(self):
+
+    def initialize_network(self, maintain_weights = False):
         for neuron_id in self.neurons:
             neuron = self.neurons[neuron_id]
             neuron.initialize()
@@ -20,7 +23,7 @@ class Network():
                 self.neuron_membrane_potential_monitor.record_neuron_membrane_potential(0, neuron, neuron_id)
 
         for connection in self.connections:
-            connection[2].initialize()
+            connection[2].initialize(maintain_weights = maintain_weights)
             connection[3].initialize()
             synapse_id = f's[{connection[0]}_{connection[1]}]'
             if self.enable_monitors:
@@ -38,15 +41,16 @@ class Network():
     
     def forward_single_time_step(self, t, train_recorder):
         def evolve_neuron(neuron_id):
-            neuron = self.neurons[neuron_id]
+            neuron= self.neurons[neuron_id]
             connections_to_current_neuron = self.neuron_in_connection_map[neuron_id]
             
-            total_synapse_out = 0
+            total_synapse_out = np.zeros((neuron.n_neuron))
         
             for connection in connections_to_current_neuron:
                 synapse = connection[3]
                 synapse_states, synapse_out = synapse.states, synapse.states[synapse._output_index]
-                total_synapse_out += synapse_out
+                total_synapse_out += synapse_out.sum(axis = 1)
+                
       
             return neuron(total_synapse_out)
             
@@ -59,7 +63,9 @@ class Network():
             pre_neuron = self.neurons[connection[0]]
             post_neuron = self.neurons[connection[1]]
             connection_states, connection_output = conn(pre_neuron.states[pre_neuron._output_index])
+
             synapse_states, synapse_output = synapse(connection_output)
+
             
         # update states of neurons and synapses. (states x_{t} evolve to x_{t + 1})
         for neuron_id in self.neurons:

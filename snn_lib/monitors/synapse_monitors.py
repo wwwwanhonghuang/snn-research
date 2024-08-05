@@ -8,9 +8,8 @@ class SynapseOutputMonitor(object):
             self.synapse_output_records[synapse_id] = {}
         out = synapse.states[synapse._output_index]
         if isinstance(out, (list, numpy.ndarray)):
-            if len(out) > 1:
-                raise ValueError
-            out = out[0]
+            if len(out) == 1:        
+                out = out[0]
         self.synapse_output_records[synapse_id][t] = out
         
     def clear_record(self):

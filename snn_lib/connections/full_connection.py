@@ -21,10 +21,11 @@ class FullConnection(AbstractConnection):
     def get_output(self, u):
         return np.dot(self.W, u) #self.W @ u
     
-    def initialize(self, W = None):
-        if W == None:
-            self.W = 0.1 * np.random.rand(self.N_out, self.N_in)
-        else:
-            self.W = W
+    def initialize(self, W = None, maintain_weights = False):
+        if not maintain_weights == False:
+            if W == None:
+                self.W = 0.1 * np.random.rand(self.N_out, self.N_in)
+            else:
+                self.W = W
         self._cached_states = None
             

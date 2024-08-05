@@ -38,7 +38,7 @@ class HodgkinHuxleyNeuron(AbstractNeuron):
     def beta_n(self, V):
         return 0.125 * np.exp(-(V + 65) / 80.0)
         
-    def initialize(self):
+    def initialize(self, maintain_weights = False):
         self._states = [-65, 0.05, 0.6, 0.32]
         self._cached_states = None
         

@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
-class NeuronPlot():
-
-    def plot_possion_neuron_raster(self, possion_neuron):
+def plot_possion_neuron_raster(possion_neuron):
         t = np.arange(possion_neuron.time_steps) * possion_neuron.dt
         plt.figure(figsize=(5, 4))
-        for i in range(possion_neuron.N):
+        for i in range(possion_neuron.neuron_count):
             plt.plot(t, possion_neuron.spikes[:, i] * (i + 1), 'ko', markersize=2)
         plt.xlabel('Time (s)')
         plt.ylabel('Neuron index')

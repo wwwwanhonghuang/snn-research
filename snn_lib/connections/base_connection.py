@@ -18,7 +18,7 @@ class AbstractConnection(object):
     def cached_states(self):
         return self._cached_states
     
-    def initialize(self):
+    def initialize(self, maintain_weights = False):
         raise NotImplemented
     
     def pseudo_update_states(self, u = None):

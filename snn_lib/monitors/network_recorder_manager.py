@@ -39,7 +39,7 @@ class NetworkRecorderManager():
     def add_pre_requisite(self, record, requisite):
         if record not in self.requisites:
             self.requisites[record] = []
-        self.requisites[record].append(requisite)
+        self.requisites[record].extend(requisite)
         
     def update_all_recorders(self, t, arg = None):
         for recorder_id in self.neuron_recorders:     
@@ -66,7 +66,7 @@ class NetworkRecorderManager():
         for neuron_id in self.neuron_map:
             new_value = update_function(t, self, self.neuron_map[neuron_id], neuron_id, self.neuron_recorders[recorder_id].get(neuron_id), arg)
             self.neuron_recorders[recorder_id].update(neuron_id, new_value)
-        self.neuron_recorders[recorder_id]['updated'] = True
+        self.neuron_recorder_update_states[recorder_id] = True
     
     def update_connection_recorder(self, t, recorder_id, arg = None):
         if self.connection_recorder_update_states[recorder_id] == True:
@@ -85,7 +85,7 @@ class NetworkRecorderManager():
             new_value = update_function(t, self, \
                 connection, self.connection_recorders[recorder_id].get(connection[0] + "_" + connection[1]), arg)
             self.connection_recorders[recorder_id].update(connection[0] + "_" + connection[1], new_value)
-        self.connection_recorders[recorder_id]['updated'] = True
+        self.connection_recorder_update_states[recorder_id] = True
     
     def initialize_recorders(self):
         for recorder_id in self.neuron_recorders:
