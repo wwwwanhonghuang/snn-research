@@ -37,7 +37,7 @@ class CustomAllToAllConnection(AbstractConnection):
             else:
                 W = np.random.rand(size[0], size[1])
             if W.shape[0] != size[0] or W.shape[1] != size[1]:
-                raise ValueError("weight shape = [%d, %d] should equal to [%d, %d]" % (self.W.shape[0], self.W.shape[1], \
+                raise ValueError("weight shape = [%d, %d] should equal to [%d, %d]" % (W.shape[0], W.shape[1], \
                     size[0], size[1]))
             self.W = W
         self._states = [0]
@@ -81,7 +81,7 @@ class CustomOneToOneConnection(AbstractConnection):
             else:
                 W = np.random.rand(size[0], size[1])
             if W.shape[0] != size[0] or W.shape[1] != size[1]:
-                raise ValueError("weight shape = [%d, %d] should equal to [%d, %d]" % (self.W.shape[0], self.W.shape[1], \
+                raise ValueError("weight shape = [%d, %d] should equal to [%d, %d]" % (W.shape[0], W.shape[1], \
                     size[0], size[1]))
             self.W = W
         self._states = [0]
@@ -113,7 +113,6 @@ class CustomConnection(AbstractConnection):
         return out #self.W @ u
     
     def initialize(self, W = None, maintain_weights = False):
-        
         size = (self.post_connection_neuron.n_neuron, self.pre_connection_neuron.n_neuron)
         if not maintain_weights:
             if not (self.weights is None):
@@ -121,7 +120,7 @@ class CustomConnection(AbstractConnection):
             else:
                 W = np.random.rand(size[0], size[1])
             if W.shape[0] != size[0] or W.shape[1] != size[1]:
-                raise ValueError("weight shape = [%d, %d] should equal to [%d, %d]" % (self.W.shape[0], self.W.shape[1], \
+                raise ValueError("weight shape = [%d, %d] should equal to [%d, %d]" % (W.shape[0], W.shape[1], \
                     size[0], size[1]))
             self.W = W
         self._states = [0]

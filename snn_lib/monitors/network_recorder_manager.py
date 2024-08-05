@@ -39,7 +39,7 @@ class NetworkRecorderManager():
     def add_pre_requisite(self, record, requisite):
         if record not in self.requisites:
             self.requisites[record] = []
-        self.requisites[record].append(requisite)
+        self.requisites[record].extend(requisite)
         
     def update_all_recorders(self, t, arg = None):
         for recorder_id in self.neuron_recorders:     

@@ -3,7 +3,7 @@ from snn_lib.monitors.synapse_monitors import SynapseOutputMonitor
 import numpy as np
 
 class Network():
-    def __init__(self, neurons, connections, enable_monitors = False) -> None:
+    def __init__(self, neurons, connections, enable_monitors = True) -> None:
         self.neurons = neurons
         self.connections = connections
         self.enable_monitors = enable_monitors
