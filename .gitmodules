@@ -1,3 +1,0 @@
-[submodule "microstates/eeg_latent_space"]
-	path = microstates/eeg_latent_space
-	url = https://github.com/jajcayn/eeg_latent_space.git
