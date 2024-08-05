@@ -17,10 +17,9 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         ## parameters
         self.time_steps = (int)(np.ceil(self.simulation_time_duration / self.dt))
         self.spikes = spikes
-        self.N = N
         if N != spikes.shape[1]:
             raise ValueError("N = %d should equal to the spikes's 2-nd dim, which has size of %d" % (N, spikes.shape[1]))
-        
+        self.neuron_count = N
         self.INDEX_SPIKE_OUT = 0
         self.INDEX_T = 1
         self.INDEX_V = 2
@@ -45,12 +44,15 @@ class FixedSpikeTrainNeuronModel(AbstractNeuron):
         
     def pseudo_update_states(self, u = None):
         t = self.states[self.INDEX_T]
-        t += 1
         neurons_v = self.spikes[t]
+        t += 1
+
         self.cache_states([neurons_v, t, 0])
+        
         return self.cached_states
     
     def initialize(self):
         self._states = [self.spikes[0], 0, 0]
         self._cached_states = None
+        
         

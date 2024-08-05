@@ -18,10 +18,11 @@ class OneToOneConnection(AbstractConnection):
     def get_output(self, u):
         return self.W * u #self.W @ u
     
-    def initialize(self, W = None):
-        if W == None:
-            self.W = 0.1 * np.random.rand()
-        else:
-            self.W = W
+    def initialize(self, W = None, maintain_weights = False):
+        if not maintain_weights:
+            if W == None:
+                self.W = 0.1 * np.random.rand()
+            else:
+                self.W = W
         self._states = [0]
         self._cached_states = None

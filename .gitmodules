@@ -1,0 +1,3 @@
+[submodule "eeg_latent_space"]
+	path = microstates/eeg_latent_space
+	url = git@github.com:Sakuyui/eeg_latent_space.git
